@@ -6,18 +6,19 @@ import {
   Divider,
   Stack,
   Button,
+  TextField
 } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 
 function DetailsView(props: Props) {
   const { handleSubmit, setValue, register } = useForm<formValues>();
 
-  const onSubmit = (textValue: Todo) => {
+  const onSubmit: SubmitHandler<formValues> = (item: Todo) => {
     if (props.item.id) {
-      const updatedItem = Object.assign(props.item, textValue);
+      const updatedItem = Object.assign(props.item, item);
       props.update(updatedItem);
     } else {
-      props.add(textValue);
+      props.add(item);
     }
   }
 
@@ -34,19 +35,19 @@ function DetailsView(props: Props) {
 
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <Stack divider={<Divider orientation="vertical" flexItem />} spacing={2}>
-          <input
+          <TextField
+            variant="outlined"
+            {...register('name', { required: true })}
+            name="name"
             type="text"
-            placeholder="Title"
-            {...register("name")}
-            defaultValue={props.item.name}
           />
 
-          <input
+          <TextField
+            variant="outlined"
+            {...register('description', { required: true })}
+            name="description"
             type="text"
-            placeholder="Description"
-            {...register("description")}
-            defaultValue={props.item.description}
-            />
+          />
 
           <Button color="success" variant="outlined" type="submit">{props.item.id ? 'Update': 'Create'}</Button>
           <Button color="error" variant="outlined" type="reset" onClick={() => props.resetItem()}>Cancel</Button>
@@ -64,6 +65,7 @@ interface Props {
 }
 
 type formValues = {
+  id: number,
   name: string
   description: string
 }

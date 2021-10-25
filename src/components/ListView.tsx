@@ -10,8 +10,16 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Todo } from '../todo';
+import { useState } from 'react';
 
 function ListView(props: Props) {
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  const handleListItemClick = (
+    index: number
+  ) => {
+    setSelectedIndex(index);
+  };
 
   if (!props.items.length) {
     return <Typography sx={{ mt: 4, mb: 2 }} variant="h2" component="div">Items</Typography>;
@@ -40,7 +48,11 @@ function ListView(props: Props) {
                       <DeleteIcon />
                     </IconButton>
                   }
-                  onClick={() => props.selectItem(item)}
+                  selected={selectedIndex === index}
+                  onClick={() => {
+                    handleListItemClick(index)
+                    props.selectItem(item)
+                  }}
                 >
                   <ListItemText
                     primary={item.name}
